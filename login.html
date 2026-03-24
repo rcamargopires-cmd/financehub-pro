@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceHub Pro - Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="auth-container">
+        <div class="auth-card glass">
+            <div class="auth-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="wallet"></i>
+                    </div>
+                    <h1>Finance<span>Hub</span> Pro</h1>
+                </div>
+                <p id="authSubtitle">A sua liberdade financeira começa aqui.</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <label for="loginUser">Nome de Usuário</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user"></i>
+                        <input type="text" id="loginUser" placeholder="Seu usuário" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="loginPass">Senha</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <span>Entrar</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
+                <p class="auth-switch">Não tem conta? <a href="#" id="toRegister">Crie uma agora</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label for="regName">Nome Completo</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user-plus"></i>
+                        <input type="text" id="regName" placeholder="Seu nome" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="regUser">Nome de Usuário</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="at-sign"></i>
+                        <input type="text" id="regUser" placeholder="Como quer ser chamado" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="regPass">Senha</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" id="regPass" placeholder="Pelo menos 6 caracteres" minlength="6" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <span>Criar Conta</span>
+                    <i data-lucide="user-check"></i>
+                </button>
+                <p class="auth-switch">Já tem conta? <a href="#" id="toLogin">Faça login</a></p>
+            </form>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Form switching logic
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const toRegister = document.getElementById('toRegister');
+        const toLogin = document.getElementById('toLogin');
+        const subtitle = document.getElementById('authSubtitle');
+
+        toRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.remove('active');
+            setTimeout(() => {
+                registerForm.classList.add('active');
+                subtitle.textContent = "Comece sua jornada financeira hoje.";
+            }, 300);
+        });
+
+        toLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.remove('active');
+            setTimeout(() => {
+                loginForm.classList.add('active');
+                subtitle.textContent = "A sua liberdade financeira começa aqui.";
+            }, 300);
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
