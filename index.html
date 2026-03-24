@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceHub Pro - Controle Financeiro Completo</title>
+    <meta name="description" content="Aplicativo completo de controle financeiro pessoal com fluxo de caixa, controle bancário, cartão de crédito, relatórios e metas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="wallet"></i>
+                </div>
+                <span class="logo-text">FinanceHub<span class="pro">Pro</span></span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i data-lucide="panel-left-close"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-section="cashflow">
+                <i data-lucide="arrow-left-right"></i>
+                <span>Fluxo de Caixa</span>
+            </a>
+            <a href="#" class="nav-item" data-section="banks">
+                <i data-lucide="landmark"></i>
+                <span>Bancos</span>
+            </a>
+            <a href="#" class="nav-item" data-section="cards">
+                <i data-lucide="credit-card"></i>
+                <span>Cartões</span>
+            </a>
+            <a href="#" class="nav-item" data-section="categories">
+                <i data-lucide="tags"></i>
+                <span>Categorias</span>
+            </a>
+            <a href="#" class="nav-item" data-section="reports">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Relatórios</span>
+            </a>
+            <a href="#" class="nav-item" data-section="recurrences">
+                <i data-lucide="repeat"></i>
+                <span>Recorrências</span>
+            </a>
+            <a href="#" class="nav-item" data-section="goals">
+                <i data-lucide="target"></i>
+                <span>Metas</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-user" id="sidebarUser">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-info">
+                <span class="user-name" id="userNameDisplay">Usuário</span>
+                <span class="user-status">Conectado</span>
+            </div>
+            <button class="btn-logout" id="btnLogout" title="Sair">
+                <i data-lucide="log-out"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn-export" id="btnExportData" title="Exportar Dados">
+                <i data-lucide="download"></i>
+                <span>Exportar</span>
+            </button>
+            <button class="btn-import" id="btnImportData" title="Importar Dados">
+                <i data-lucide="upload"></i>
+                <span>Importar</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobileHeader">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i data-lucide="menu"></i>
+        </button>
+        <span class="mobile-title">FinanceHub<span class="pro">Pro</span></span>
+    </header>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ==================== DASHBOARD ==================== -->
+        <section class="section active" id="section-dashboard">
+            <div class="section-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="section-subtitle">Visão geral das suas finanças</p>
+                </div>
+                <div class="month-selector">
+                    <button class="btn-icon" id="prevMonth"><i data-lucide="chevron-left"></i></button>
+                    <span id="currentMonthLabel">Março 2026</span>
+                    <button class="btn-icon" id="nextMonth"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card card-balance">
+                    <div class="card-icon"><i data-lucide="wallet"></i></div>
+                    <div class="card-info">
+                        <span class="card-label">Saldo Total</span>
+                        <span class="card-value" id="totalBalance">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-income">
+                    <div class="card-icon"><i data-lucide="trending-up"></i></div>
+                    <div class="card-info">
+                        <span class="card-label">Receitas</span>
+                        <span class="card-value" id="totalIncome">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-expense">
+                    <div class="card-icon"><i data-lucide="trending-down"></i></div>
+                    <div class="card-info">
+                        <span class="card-label">Despesas</span>
+                        <span class="card-value" id="totalExpense">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="summary-card card-cards">
+                    <div class="card-icon"><i data-lucide="credit-card"></i></div>
+                    <div class="card-info">
+                        <span class="card-label">Fatura Cartões</span>
+                        <span class="card-value" id="totalCardBill">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>Receitas vs Despesas</h3>
+                    <canvas id="chartIncomeExpense"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Despesas por Categoria</h3>
+                    <canvas id="chartCategoryPie"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card-panel">
+                <div class="panel-header">
+                    <h3>Últimas Transações</h3>
+                    <button class="btn-link" data-section="cashflow">Ver todas →</button>
+                </div>
+                <div class="transactions-list" id="recentTransactions">
+                    <div class="empty-state">
+                        <i data-lucide="inbox"></i>
+                        <p>Nenhuma transação registrada</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FLUXO DE CAIXA ==================== -->
+        <section class="section" id="section-cashflow">
+            <div class="section-header">
+                <div>
+                    <h1>Fluxo de Caixa</h1>
+                    <p class="section-subtitle">Gerencie suas receitas e despesas</p>
+                </div>
+                <div class="header-actions">
+                    <div class="filter-group">
+                        <select id="filterType" class="input-select">
+                            <option value="all">Todos</option>
+                            <option value="income">Receitas</option>
+                            <option value="expense">Despesas</option>
+                        </select>
+                        <select id="filterCategory" class="input-select">
+                            <option value="all">Todas Categorias</option>
+                        </select>
+                        <input type="month" id="filterMonth" class="input-field">
+                    </div>
+                    <button class="btn-primary" id="btnAddTransaction">
+                        <i data-lucide="plus"></i> Nova Transação
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cash Flow Summary -->
+            <div class="cashflow-summary">
+                <div class="cf-card cf-income">
+                    <span class="cf-label">Receitas do Mês</span>
+                    <span class="cf-value" id="cfIncome">R$ 0,00</span>
+                </div>
+                <div class="cf-card cf-expense">
+                    <span class="cf-label">Despesas do Mês</span>
+                    <span class="cf-value" id="cfExpense">R$ 0,00</span>
+                </div>
+                <div class="cf-card cf-balance">
+                    <span class="cf-label">Balanço</span>
+                    <span class="cf-value" id="cfBalance">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card-panel">
+                <div class="table-responsive">
+                    <table class="data-table" id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Conta</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyTransactions">
+                    <i data-lucide="file-text"></i>
+                    <p>Nenhuma transação encontrada</p>
+                    <button class="btn-primary" id="btnAddTransactionEmpty">
+                        <i data-lucide="plus"></i> Adicionar Transação
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BANCOS ==================== -->
+        <section class="section" id="section-banks">
+            <div class="section-header">
+                <div>
+                    <h1>Controle Bancário</h1>
+                    <p class="section-subtitle">Gerencie suas contas bancárias</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="btnAddBank">
+                        <i data-lucide="plus"></i> Nova Conta
+                    </button>
+                </div>
+            </div>
+
+            <div class="bank-cards-grid" id="bankCardsGrid">
+                <div class="empty-state" id="emptyBanks">
+                    <i data-lucide="landmark"></i>
+                    <p>Nenhuma conta bancária cadastrada</p>
+                    <button class="btn-primary" id="btnAddBankEmpty">
+                        <i data-lucide="plus"></i> Adicionar Conta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Caixinhas Panel -->
+            <div class="card-panel" id="caixinhasPanel" style="display:none;">
+                <div class="panel-header">
+                    <h3>📦 Caixinhas — <span id="caixinhasBankName">-</span></h3>
+                    <button class="btn-primary btn-sm" id="btnAddCaixinha">
+                        <i data-lucide="plus"></i> Nova Caixinha
+                    </button>
+                </div>
+                <div class="caixinhas-grid" id="caixinhasGrid"></div>
+            </div>
+
+            <!-- Transfer Section -->
+            <div class="card-panel" id="transferPanel" style="display:none;">
+                <h3>Transferência entre Contas</h3>
+                <div class="transfer-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Conta Origem</label>
+                            <select id="transferFrom" class="input-select"></select>
+                        </div>
+                        <div class="transfer-arrow">
+                            <i data-lucide="arrow-right"></i>
+                        </div>
+                        <div class="form-group">
+                            <label>Conta Destino</label>
+                            <select id="transferTo" class="input-select"></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="text" id="transferAmount" class="input-field" placeholder="R$ 0,00">
+                        </div>
+                        <div class="form-group">
+                            <label>Data</label>
+                            <input type="date" id="transferDate" class="input-field">
+                        </div>
+                        <button class="btn-primary btn-transfer" id="btnTransfer">
+                            <i data-lucide="send"></i> Transferir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CARTÕES ==================== -->
+        <section class="section" id="section-cards">
+            <div class="section-header">
+                <div>
+                    <h1>Cartões de Crédito</h1>
+                    <p class="section-subtitle">Gerencie seus cartões e faturas</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="btnAddCard">
+                        <i data-lucide="plus"></i> Novo Cartão
+                    </button>
+                </div>
+            </div>
+
+            <div class="credit-cards-carousel" id="creditCardsGrid">
+                <div class="empty-state" id="emptyCards">
+                    <i data-lucide="credit-card"></i>
+                    <p>Nenhum cartão cadastrado</p>
+                    <button class="btn-primary" id="btnAddCardEmpty">
+                        <i data-lucide="plus"></i> Adicionar Cartão
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Transactions -->
+            <div class="card-panel" id="cardTransactionsPanel" style="display:none;">
+                <div class="panel-header">
+                    <h3>Lançamentos do Cartão: <span id="selectedCardName">-</span></h3>
+                    <button class="btn-primary btn-sm" id="btnAddCardTransaction">
+                        <i data-lucide="plus"></i> Novo Lançamento
+                    </button>
+                </div>
+                <div class="card-bill-summary">
+                    <div class="bill-item">
+                        <span>Fatura Atual</span>
+                        <span class="bill-value" id="currentBill">R$ 0,00</span>
+                    </div>
+                    <div class="bill-item">
+                        <span>Limite Disponível</span>
+                        <span class="bill-value positive" id="availableLimit">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Parcelas</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cardTransactionsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CATEGORIAS ==================== -->
+        <section class="section" id="section-categories">
+            <div class="section-header">
+                <div>
+                    <h1>Categorias</h1>
+                    <p class="section-subtitle">Organize suas finanças por categorias</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="btnAddCategory">
+                        <i data-lucide="plus"></i> Nova Categoria
+                    </button>
+                </div>
+            </div>
+
+            <div class="categories-grid">
+                <div class="card-panel">
+                    <h3 class="panel-title"><i data-lucide="trending-up"></i> Receitas</h3>
+                    <div class="categories-list" id="incomeCategoriesList"></div>
+                </div>
+                <div class="card-panel">
+                    <h3 class="panel-title"><i data-lucide="trending-down"></i> Despesas</h3>
+                    <div class="categories-list" id="expenseCategoriesList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RELATÓRIOS ==================== -->
+        <section class="section" id="section-reports">
+            <div class="section-header">
+                <div>
+                    <h1>Relatórios</h1>
+                    <p class="section-subtitle">Análise detalhada das suas finanças</p>
+                </div>
+                <div class="header-actions">
+                    <div class="filter-group">
+                        <select id="reportPeriod" class="input-select">
+                            <option value="3">Últimos 3 meses</option>
+                            <option value="6" selected>Últimos 6 meses</option>
+                            <option value="12">Último ano</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <div class="chart-card full-width">
+                    <h3>Evolução Mensal</h3>
+                    <canvas id="chartMonthlyEvolution"></canvas>
+                </div>
+            </div>
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>Despesas por Categoria</h3>
+                    <canvas id="chartReportCategoryPie"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Top 5 Despesas</h3>
+                    <canvas id="chartTopExpenses"></canvas>
+                </div>
+            </div>
+            <div class="charts-row">
+                <div class="chart-card full-width">
+                    <h3>Comparativo Receita vs Despesa</h3>
+                    <canvas id="chartCompare"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== METAS ==================== -->
+        <section class="section" id="section-goals">
+            <div class="section-header">
+                <div>
+                    <h1>Metas Financeiras</h1>
+                    <p class="section-subtitle">Defina e acompanhe seus objetivos</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="btnAddGoal">
+                        <i data-lucide="plus"></i> Nova Meta
+                    </button>
+                </div>
+            </div>
+
+            <div class="goals-grid" id="goalsGrid">
+                <div class="empty-state" id="emptyGoals">
+                    <i data-lucide="target"></i>
+                    <p>Nenhuma meta definida</p>
+                    <button class="btn-primary" id="btnAddGoalEmpty">
+                        <i data-lucide="plus"></i> Criar Meta
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== RECORRÊNCIAS ==================== -->
+        <section class="section" id="section-recurrences">
+            <div class="section-header">
+                <div>
+                    <h1>Gastos Recorrentes</h1>
+                    <p class="section-subtitle">Gerencie assinaturas e despesas fixas mensais</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="btnAddRecurrence">
+                        <i data-lucide="plus"></i> Nova Recorrência
+                    </button>
+                </div>
+            </div>
+
+            <div class="recurrences-summary" id="recurrencesSummary">
+                <div class="cf-card cf-expense">
+                    <span class="cf-label">Total Mensal Recorrente</span>
+                    <span class="cf-value" id="recTotalMonthly">R$ 0,00</span>
+                </div>
+                <div class="cf-card cf-income">
+                    <span class="cf-label">Ativas</span>
+                    <span class="cf-value" id="recActiveCount">0</span>
+                </div>
+                <div class="cf-card cf-balance">
+                    <span class="cf-label">Pausadas</span>
+                    <span class="cf-value" id="recPausedCount">0</span>
+                </div>
+            </div>
+
+            <div class="recurrences-grid" id="recurrencesGrid">
+                <div class="empty-state" id="emptyRecurrences">
+                    <i data-lucide="repeat"></i>
+                    <p>Nenhuma recorrência cadastrada</p>
+                    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:4px">Adicione assinaturas como Netflix, Spotify, aluguel etc.</p>
+                    <button class="btn-primary" id="btnAddRecurrenceEmpty">
+                        <i data-lucide="plus"></i> Adicionar Recorrência
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAIS ==================== -->
+
+    <!-- Modal: Nova Transação -->
+    <div class="modal-overlay" id="modalTransaction">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTransactionTitle">Nova Transação</h2>
+                <button class="btn-close" data-close-modal="modalTransaction"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formTransaction" class="modal-body">
+                <input type="hidden" id="transactionId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transactionType">Tipo</label>
+                        <div class="toggle-group">
+                            <button type="button" class="toggle-btn active" data-type="income" id="toggleIncome">
+                                <i data-lucide="trending-up"></i> Receita
+                            </button>
+                            <button type="button" class="toggle-btn" data-type="expense" id="toggleExpense">
+                                <i data-lucide="trending-down"></i> Despesa
+                            </button>
+                        </div>
+                        <input type="hidden" id="transactionType" value="income">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transactionDescription">Descrição</label>
+                        <input type="text" id="transactionDescription" class="input-field" placeholder="Ex: Salário, Aluguel..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="transactionAmount">Valor</label>
+                        <input type="text" id="transactionAmount" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDate">Data</label>
+                        <input type="date" id="transactionDate" class="input-field" required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="transactionCategory">Categoria</label>
+                        <select id="transactionCategory" class="input-select" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionAccount">Conta</label>
+                        <select id="transactionAccount" class="input-select" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transactionNotes">Observações</label>
+                        <textarea id="transactionNotes" class="input-field" rows="2" placeholder="Notas opcionais..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalTransaction">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i data-lucide="check"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Conta Bancária -->
+    <div class="modal-overlay" id="modalBank">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalBankTitle">Nova Conta Bancária</h2>
+                <button class="btn-close" data-close-modal="modalBank"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formBank" class="modal-body">
+                <input type="hidden" id="bankId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bankName">Nome do Banco</label>
+                        <input type="text" id="bankName" class="input-field" placeholder="Ex: Nubank, Itaú..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="bankType">Tipo</label>
+                        <select id="bankType" class="input-select" required>
+                            <option value="checking">Conta Corrente</option>
+                            <option value="savings">Poupança</option>
+                            <option value="investment">Investimento</option>
+                            <option value="digital">Conta Digital</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bankBalance">Saldo Inicial</label>
+                        <input type="text" id="bankBalance" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bankColor">Cor</label>
+                        <div class="color-picker" id="bankColorPicker">
+                            <button type="button" class="color-option active" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background:#10b981"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background:#f59e0b"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background:#ec4899"></button>
+                            <button type="button" class="color-option" data-color="#3b82f6" style="background:#3b82f6"></button>
+                            <button type="button" class="color-option" data-color="#64748b" style="background:#64748b"></button>
+                        </div>
+                        <input type="hidden" id="bankColor" value="#8b5cf6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalBank">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Novo Cartão -->
+    <div class="modal-overlay" id="modalCard">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalCardTitle">Novo Cartão de Crédito</h2>
+                <button class="btn-close" data-close-modal="modalCard"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formCard" class="modal-body">
+                <input type="hidden" id="cardId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cardName">Nome do Cartão</label>
+                        <input type="text" id="cardName" class="input-field" placeholder="Ex: Nubank Platinum..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="cardLimit">Limite Total</label>
+                        <input type="text" id="cardLimit" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardClosingDay">Dia de Fechamento</label>
+                        <input type="number" id="cardClosingDay" class="input-field" min="1" max="31" placeholder="Ex: 15" required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="cardDueDay">Dia de Vencimento</label>
+                        <input type="number" id="cardDueDay" class="input-field" min="1" max="31" placeholder="Ex: 25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardBrand">Bandeira</label>
+                        <select id="cardBrand" class="input-select" required>
+                            <option value="visa">Visa</option>
+                            <option value="mastercard">Mastercard</option>
+                            <option value="elo">Elo</option>
+                            <option value="amex">American Express</option>
+                            <option value="hipercard">Hipercard</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cardColor">Cor</label>
+                        <div class="color-picker" id="cardColorPicker">
+                            <button type="button" class="color-option active" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background:#10b981"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background:#f59e0b"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background:#ec4899"></button>
+                            <button type="button" class="color-option" data-color="#1e1e2e" style="background:#1e1e2e; border: 1px solid #444;"></button>
+                            <button type="button" class="color-option" data-color="#3b82f6" style="background:#3b82f6"></button>
+                        </div>
+                        <input type="hidden" id="cardColor" value="#8b5cf6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCard">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Lançamento Cartão -->
+    <div class="modal-overlay" id="modalCardTransaction">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Novo Lançamento no Cartão</h2>
+                <button class="btn-close" data-close-modal="modalCardTransaction"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formCardTransaction" class="modal-body">
+                <input type="hidden" id="cardTransactionId">
+                <input type="hidden" id="cardTransactionCardId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cardTransDescription">Descrição</label>
+                        <input type="text" id="cardTransDescription" class="input-field" placeholder="Ex: Amazon, iFood..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="cardTransAmount">Valor</label>
+                        <input type="text" id="cardTransAmount" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardTransDate">Data</label>
+                        <input type="date" id="cardTransDate" class="input-field" required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="cardTransCategory">Categoria</label>
+                        <select id="cardTransCategory" class="input-select" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardTransInstallments">Parcelas</label>
+                        <input type="number" id="cardTransInstallments" class="input-field" min="1" max="48" value="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCardTransaction">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Categoria -->
+    <div class="modal-overlay" id="modalCategory">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2 id="modalCategoryTitle">Nova Categoria</h2>
+                <button class="btn-close" data-close-modal="modalCategory"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formCategory" class="modal-body">
+                <input type="hidden" id="categoryId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoryType">Tipo</label>
+                        <select id="categoryType" class="input-select" required>
+                            <option value="expense">Despesa</option>
+                            <option value="income">Receita</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoryName">Nome</label>
+                        <input type="text" id="categoryName" class="input-field" placeholder="Ex: Alimentação..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ícone</label>
+                        <div class="icon-picker" id="iconPicker">
+                            <button type="button" class="icon-option active" data-icon="shopping-cart">🛒</button>
+                            <button type="button" class="icon-option" data-icon="home">🏠</button>
+                            <button type="button" class="icon-option" data-icon="car">🚗</button>
+                            <button type="button" class="icon-option" data-icon="utensils">🍽️</button>
+                            <button type="button" class="icon-option" data-icon="heart">❤️</button>
+                            <button type="button" class="icon-option" data-icon="book">📚</button>
+                            <button type="button" class="icon-option" data-icon="plane">✈️</button>
+                            <button type="button" class="icon-option" data-icon="briefcase">💼</button>
+                            <button type="button" class="icon-option" data-icon="gamepad">🎮</button>
+                            <button type="button" class="icon-option" data-icon="gift">🎁</button>
+                            <button type="button" class="icon-option" data-icon="music">🎵</button>
+                            <button type="button" class="icon-option" data-icon="dumbbell">💪</button>
+                            <button type="button" class="icon-option" data-icon="stethoscope">🏥</button>
+                            <button type="button" class="icon-option" data-icon="dog">🐕</button>
+                            <button type="button" class="icon-option" data-icon="shirt">👕</button>
+                            <button type="button" class="icon-option" data-icon="dollar">💰</button>
+                            <button type="button" class="icon-option" data-icon="wallet">👛</button>
+                            <button type="button" class="icon-option" data-icon="phone">📱</button>
+                            <button type="button" class="icon-option" data-icon="wifi">📡</button>
+                            <button type="button" class="icon-option" data-icon="zap">⚡</button>
+                        </div>
+                        <input type="hidden" id="categoryIcon" value="shopping-cart">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cor</label>
+                        <div class="color-picker" id="categoryColorPicker">
+                            <button type="button" class="color-option active" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background:#10b981"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background:#f59e0b"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background:#ec4899"></button>
+                            <button type="button" class="color-option" data-color="#3b82f6" style="background:#3b82f6"></button>
+                            <button type="button" class="color-option" data-color="#64748b" style="background:#64748b"></button>
+                        </div>
+                        <input type="hidden" id="categoryColor" value="#8b5cf6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCategory">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Meta -->
+    <div class="modal-overlay" id="modalGoal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalGoalTitle">Nova Meta Financeira</h2>
+                <button class="btn-close" data-close-modal="modalGoal"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formGoal" class="modal-body">
+                <input type="hidden" id="goalId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="goalName">Nome da Meta</label>
+                        <input type="text" id="goalName" class="input-field" placeholder="Ex: Viagem, Reserva de Emergência..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="goalTarget">Valor da Meta</label>
+                        <input type="text" id="goalTarget" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalCurrent">Valor Atual</label>
+                        <input type="text" id="goalCurrent" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="goalDeadline">Prazo</label>
+                        <input type="date" id="goalDeadline" class="input-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cor</label>
+                        <div class="color-picker" id="goalColorPicker">
+                            <button type="button" class="color-option active" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background:#10b981"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background:#f59e0b"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background:#ec4899"></button>
+                        </div>
+                        <input type="hidden" id="goalColor" value="#8b5cf6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalGoal">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Caixinha -->
+    <div class="modal-overlay" id="modalCaixinha">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2 id="modalCaixinhaTitle">Nova Caixinha</h2>
+                <button class="btn-close" data-close-modal="modalCaixinha"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formCaixinha" class="modal-body">
+                <input type="hidden" id="caixinhaId">
+                <input type="hidden" id="caixinhaAccountId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="caixinhaName">Nome da Caixinha</label>
+                        <input type="text" id="caixinhaName" class="input-field" placeholder="Ex: Viagem, Emergência..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="caixinhaTarget">Meta (R$)</label>
+                        <input type="text" id="caixinhaTarget" class="input-field" placeholder="R$ 0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="caixinhaBalance">Valor Atual</label>
+                        <input type="text" id="caixinhaBalance" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Emoji</label>
+                        <div class="icon-picker" id="caixinhaEmojiPicker">
+                            <button type="button" class="icon-option active" data-icon="📦">📦</button>
+                            <button type="button" class="icon-option" data-icon="✈️">✈️</button>
+                            <button type="button" class="icon-option" data-icon="🏠">🏠</button>
+                            <button type="button" class="icon-option" data-icon="🚗">🚗</button>
+                            <button type="button" class="icon-option" data-icon="🎓">🎓</button>
+                            <button type="button" class="icon-option" data-icon="💍">💍</button>
+                            <button type="button" class="icon-option" data-icon="🎮">🎮</button>
+                            <button type="button" class="icon-option" data-icon="🛡️">🛡️</button>
+                            <button type="button" class="icon-option" data-icon="📱">📱</button>
+                            <button type="button" class="icon-option" data-icon="🎄">🎄</button>
+                            <button type="button" class="icon-option" data-icon="💊">💊</button>
+                            <button type="button" class="icon-option" data-icon="🐕">🐕</button>
+                        </div>
+                        <input type="hidden" id="caixinhaEmoji" value="📦">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cor</label>
+                        <div class="color-picker" id="caixinhaColorPicker">
+                            <button type="button" class="color-option active" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background:#10b981"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background:#f59e0b"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background:#ec4899"></button>
+                        </div>
+                        <input type="hidden" id="caixinhaColor" value="#8b5cf6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCaixinha">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Movimentar Caixinha -->
+    <div class="modal-overlay" id="modalCaixinhaMove">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2 id="modalCaixinhaMoveTitle">Movimentar Caixinha</h2>
+                <button class="btn-close" data-close-modal="modalCaixinhaMove"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formCaixinhaMove" class="modal-body">
+                <input type="hidden" id="caixinhaMoveId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Operação</label>
+                        <div class="toggle-group">
+                            <button type="button" class="toggle-btn active" data-type="deposit" id="toggleDeposit">
+                                <i data-lucide="arrow-down"></i> Depositar
+                            </button>
+                            <button type="button" class="toggle-btn" data-type="withdraw" id="toggleWithdraw">
+                                <i data-lucide="arrow-up"></i> Resgatar
+                            </button>
+                        </div>
+                        <input type="hidden" id="caixinhaMoveType" value="deposit">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="caixinhaMoveAmount">Valor</label>
+                        <input type="text" id="caixinhaMoveAmount" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalCaixinhaMove">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Recorrência -->
+    <div class="modal-overlay" id="modalRecurrence">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalRecurrenceTitle">Nova Recorrência</h2>
+                <button class="btn-close" data-close-modal="modalRecurrence"><i data-lucide="x"></i></button>
+            </div>
+            <form id="formRecurrence" class="modal-body">
+                <input type="hidden" id="recurrenceId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recurrenceType">Tipo</label>
+                        <div class="toggle-group">
+                            <button type="button" class="toggle-btn" data-type="income" id="toggleRecIncome">
+                                <i data-lucide="trending-up"></i> Receita
+                            </button>
+                            <button type="button" class="toggle-btn active" data-type="expense" id="toggleRecExpense">
+                                <i data-lucide="trending-down"></i> Despesa
+                            </button>
+                        </div>
+                        <input type="hidden" id="recurrenceType" value="expense">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recurrenceDescription">Descrição</label>
+                        <input type="text" id="recurrenceDescription" class="input-field" placeholder="Ex: Netflix, Spotify, Aluguel..." required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="recurrenceAmount">Valor Mensal</label>
+                        <input type="text" id="recurrenceAmount" class="input-field" placeholder="R$ 0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recurrenceDayOfMonth">Dia do Mês</label>
+                        <input type="number" id="recurrenceDayOfMonth" class="input-field" min="1" max="31" placeholder="Ex: 15" required>
+                    </div>
+                </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="recurrenceCategory">Categoria</label>
+                        <select id="recurrenceCategory" class="input-select" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recurrenceAccount">Conta</label>
+                        <select id="recurrenceAccount" class="input-select" required>
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recurrenceNotes">Observações</label>
+                        <textarea id="recurrenceNotes" class="input-field" rows="2" placeholder="Notas opcionais..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-close-modal="modalRecurrence">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i data-lucide="check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão -->
+    <div class="modal-overlay" id="modalConfirm">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button class="btn-close" data-close-modal="modalConfirm"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Tem certeza que deseja excluir este item?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" data-close-modal="modalConfirm">Cancelar</button>
+                <button class="btn-danger" id="btnConfirmDelete">
+                    <i data-lucide="trash-2"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none;">
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
